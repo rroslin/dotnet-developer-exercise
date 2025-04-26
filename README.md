@@ -56,18 +56,17 @@ public class User
 ## Refinement
 This are points that I would have raised to be redefined or clarified:
 
-- `MonthsOfExperience` should not be assigned or modifiable to `Employment`.
-This can cause issues down the line where the MonthsOfExperience does not match `StartDate` and `EndDate`. This can be easily avoided by deriving `MonthsOfExperience` from `StartDate` and `EndDate`.
+- `MonthsOfExperience` should not be assigned or modifiable in `Employment`. This can cause issues where `MonthsOfExperience` does not match `StartDate` and `EndDate`. This issue can be avoided by deriving `MonthsOfExperience` from `StartDate` and `EndDate`.
 
-- Assuming `EndDate` is null means the employment is on-going, `MonthsOfExperience` should be computed from `StartDate` and present date.
+- If `EndDate` is null, it should be assumed that the employment is ongoing. In this case, `MonthsOfExperience` should be computed from `StartDate` to the current date.
 
-- Salary shouldn't be `uint` because currencies are not stored as whole numbers, `decimal` should be used as it covers most financial and monetary calculations.
+- Salary should not use `uint` because currencies are not stored as whole numbers. Instead, `decimal` should be used as it is more suitable for financial and monetary calculations.
 
-- `PostCode` shouldn't be `int`, some countries use alpha-numeric postal-codes so assuming this api would be used internationally we should use `string` to be safe.
+- `PostCode` should not use `int`, as some countries use alphanumeric postal codes. To ensure international compatibility, `string` should be used instead.
 
-- We should validate `Email` formatting to safeguard from bad data.
+- Email formatting should be validated to prevent bad data from being entered.
 
-- Mandatory fields should not be nullable, unless there is usecase for nullability. (Should be raised for clarification)
+- Mandatory fields should not be nullable unless there is a specific use case for nullability. This should be clarified during the requirements phase.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
