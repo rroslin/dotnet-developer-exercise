@@ -1,9 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using Persistence.Contexts;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
+
+// Add and configure database context
+builder.Services.AddDbContext<AppDbContext>(options => {
+
+    var connectionString = builder.Configuration.GetConnectionString("Default");
+    if (string.IsNullOrEmpty(connectionString)) throw new Exception("Connection string not found");
+    
+    options.UseSqlite(connectionString.Replace("{path}", AppContext.BaseDirectory));
+});
 
 var app = builder.Build();
 
