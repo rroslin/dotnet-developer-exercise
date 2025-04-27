@@ -57,6 +57,18 @@ public class CreateUserEmploymentRequestValidator : AbstractValidator<CreateUser
 
 public static class CreateUserEmploymentMappingExtensions
 {
+
+    public static Employment ToEmployment(this CreateUserEmploymentRequest request)
+    {
+        return new Employment
+        {
+            Company = request.Company,
+            Salary = request.Salary,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+        };
+    }
+
     public static CreateUserEmploymentResponse ToCreateUserEmploymentResponse(this Employment employment)
     {
         return new CreateUserEmploymentResponse(

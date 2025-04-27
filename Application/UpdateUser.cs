@@ -26,6 +26,14 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 
 public static class UpdateUserMappingExtensions
 {
+    public static void UpdateUser(this User user, UpdateUserRequest request)
+    {
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.Email = request.Email;
+        user.Address = request.Address?.ToAddress();
+    }
+    
     public static UpdateUserResponse ToUpdateUserResponse(this User user)
     {
         return new UpdateUserResponse(
