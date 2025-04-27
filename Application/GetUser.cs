@@ -2,8 +2,6 @@ using Domain;
 
 namespace Application;
 
-public record GetUserRequest(int Id);
-
 public record GetUserResponse(
     int Id, 
     string FirstName, 

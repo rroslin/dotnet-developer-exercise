@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application;
 
-public record UpdateUserRequest(int Id, string FirstName, string LastName, string Email, UserAddress? Address);
+public record UpdateUserRequest(string FirstName, string LastName, string Email, UserAddress? Address);
 
 public record UpdateUserResponse(
     string FirstName, 
