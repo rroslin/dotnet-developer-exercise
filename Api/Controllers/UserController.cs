@@ -12,6 +12,15 @@ public class UserController(AppDbContext dbContext) : ControllerBase
 {
     AppDbContext _dbContext = dbContext;
 
+    [HttpGet("{id}")]
+    public ActionResult<GetUserResponse> GetUser(int id)
+    {
+        var user = _dbContext.Users.Find(id);
+        if (user == null) return NotFound();
+
+        return Ok(user.ToGetUserByIdResponse());
+    }
+
     [HttpPost]
     public ActionResult<CreateUserResponse> CreateUser(CreateUserRequest request)
     {
@@ -33,15 +42,6 @@ public class UserController(AppDbContext dbContext) : ControllerBase
         _dbContext.SaveChanges();
 
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToCreateUserResponse());
-    }
-
-    [HttpGet("{id}")]
-    public ActionResult<GetUserResponse> GetUser(int id)
-    {
-        var user = _dbContext.Users.Find(id);
-        if (user == null) return NotFound();
-
-        return Ok(user.ToGetUserByIdResponse());
     }
 
     [HttpPut("{id}")]
@@ -108,4 +108,6 @@ public class UserController(AppDbContext dbContext) : ControllerBase
 
         return NoContent();
     }
+    
+
 }
