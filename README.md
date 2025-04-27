@@ -76,12 +76,14 @@ API Endpoints:
 
 - If the requirement really necessitates that employment data should be included when fetching user. We can create `User` details endpoint as a compromise. This way we can have all the details need in one call.
 
-- If the requirement really necessitates that employment data should be managed(added/deleted) under PUT endpoint. I will point that out that their are risks involved when implementing it this way:
-    - It breaks clear separation of concern.
-    - This will be hard to maintain, because `Employment` and `User` are tightly coupled, god forbid the requirements suddenly change. Decoupling this would be a nightmare. 
-    - Poses risks in client-side, because it might be misinterpreted that deleting and creating employment in the same request. This make it hard to track `Employment` changes and can cause issues persisting it.
+- If the requirement necessitates that employment data must be managed (added/deleted) under the `PUT` endpoint, it introduces several risks:
+    - It violates the principle of separation of concerns, as employment management is tightly coupled with user updates.
+    - It becomes difficult to maintain, as `Employment` and `User` are tightly coupled, god forbid the requirements suddenly change. Decoupling them later would be a complex and error-prone process.
+    - It poses risks on the client side, as it may lead to misinterpretation of operations (e.g., deleting and creating employment records in the same request). This makes it challenging to track changes to `Employment` and can cause issues with data persistence.
 
 ## Finalized Requirements
+
+Given all parties approve of the refinement. This is how I would redefine the requirements.
 
 - **GET** `api/users/{userId}`: to retrieve a user by ID.
 
@@ -89,12 +91,16 @@ API Endpoints:
 
 - **POST** `api/users`: to create a new user
     - Ensure the email is unique across the entire DbContext.
+    - Ensure the email is a valid format.
 
 - **PUT** `api/users/{userId}`: to update an existing user, and their address.
     - Ensure the email is unique across the entire DbContext.
+    - Ensure the email is a valid format.
 
 - **POST** `api/user/{userId}/employments`: to create new user employment.
     - `EndDate` should be greater than `StartDate`.
+    - Should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
+    - If `EndDate` is null, should display accurate `MonthsOfExperience` based from `StartDate` and current date.
 
 - **DELETE** `api/user/{userId}/employments`: to delete an existing user employment
 
