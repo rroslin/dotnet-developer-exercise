@@ -1,11 +1,17 @@
-using System;
-using Application.Common;
 using Domain;
 
 namespace Application;
 
 public record GetUserRequest(int Id);
-public record GetUserResponse(int Id, string FirstName, string LastName, string Email, UserAddress? Address);
+
+public record GetUserResponse(
+    int Id, 
+    string FirstName, 
+    string LastName, 
+    string Email, 
+    UserAddress? Address,
+    IReadOnlyCollection<UserEmploymentResponse> Employments
+);
 
 public static class GetUserMappingExtensions
 {
@@ -16,7 +22,8 @@ public static class GetUserMappingExtensions
             user.FirstName,
             user.LastName,
             user.Email,
-            user.Address?.ToUserAddress()
+            user.Address?.ToUserAddress(),
+            user.Employments.Select(e => e.ToUserEmploymentResponse()).ToList().AsReadOnly()
         );
     }
 }
