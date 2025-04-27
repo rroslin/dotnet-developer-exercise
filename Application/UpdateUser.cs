@@ -19,7 +19,7 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
     {
         RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required.");
         RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required.");
-        RuleFor(x => x.Email).EmailAddress().WithMessage("Invalid email format.");
+        RuleFor(x => x.Email).EmailAddress().WithMessage("A valid email address is required.");
         RuleFor(x => x.Address).SetValidator(new UserAddressValidator());
     }
 }

@@ -33,8 +33,13 @@ public class CreateUserEmploymentRequestValidator : AbstractValidator<CreateUser
             .WithMessage("Company name is required.");
 
         RuleFor(x => x.Salary)
-            .NotEmpty()
+            .NotNull()
             .WithMessage("Salary is required.");
+
+
+        RuleFor(x => x.Salary)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Salary must be greater than or equal to 0.");
 
 
         RuleFor(x => x.StartDate)
