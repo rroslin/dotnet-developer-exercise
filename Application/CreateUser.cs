@@ -1,11 +1,24 @@
 using Domain;
-using Application.Common;
 using FluentValidation;
 
 namespace Application;
 
-public record CreateUserRequest(string FirstName, string LastName, string Email, UserAddress? Address);
-public record CreateUserResponse(int Id, string FirstName, string LastName, string Email, UserAddress? Address);
+public record CreateUserRequest(
+    string FirstName, 
+    string LastName, 
+    string Email, 
+    UserAddress? Address, 
+    IReadOnlyCollection<UserEmploymentRequest> Employments
+);
+
+public record CreateUserResponse(
+    int Id, 
+    string FirstName, 
+    string LastName, 
+    string Email, 
+    UserAddress? Address, 
+    IReadOnlyCollection<UserEmploymentResponse> Employments
+);
 
 public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {
@@ -26,15 +39,17 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 
         RuleFor(x => x.Address)
             .SetValidator(new UserAddressValidator());
+
+        RuleForEach(x => x.Employments)
+            .SetValidator(new UserEmploymentRequestValidator())
+            .When(x => x.Employments != null && x.Employments.Count > 0, ApplyConditionTo.CurrentValidator);
     }
 }
-
 public static class CreateUserMappingExtensions
 {
     public static User ToUser(this CreateUserRequest request)
     {
-
-        return new User()
+        return new User
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -49,7 +64,8 @@ public static class CreateUserMappingExtensions
             user.FirstName,
             user.LastName,
             user.Email,
-            user.Address?.ToUserAddress()
+            user.Address?.ToUserAddress(),
+            user.Employments.Select(e => e.ToUserEmploymentResponse()).ToList().AsReadOnly()
         );
     }
 }
