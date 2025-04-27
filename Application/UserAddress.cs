@@ -1,7 +1,7 @@
 using Domain;
 using FluentValidation;
 
-namespace Application.Common;
+namespace Application;
 
 public record UserAddress(string Street, string City, string? PostCode);
 
