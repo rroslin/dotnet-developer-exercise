@@ -3,16 +3,25 @@ using FluentValidation;
 
 namespace Application;
 
-public record UserEmployment(
+public record UserEmploymentRequest(
     string Company,
     decimal Salary,
     DateTime StartDate,
     DateTime? EndDate
 );
 
-public class UserEmploymentValidator : AbstractValidator<UserEmployment>
+public record UserEmploymentResponse(
+    int Id,
+    string Company,
+    decimal Salary,
+    int MonthsOfExperience,
+    DateTime StartDate,
+    DateTime? EndDate
+);
+
+public class UserEmploymentRequestValidator : AbstractValidator<UserEmploymentRequest>
 {
-    public UserEmploymentValidator()
+    public UserEmploymentRequestValidator()
     {
         RuleFor(x => x.Company)
             .NotEmpty()
@@ -37,11 +46,24 @@ public class UserEmploymentValidator : AbstractValidator<UserEmployment>
 
 public static class UserEmploymentMappingExtensions
 {
-    public static UserEmployment ToUserEmployment(this Employment employment)
+    public static Employment ToEmployment(this UserEmploymentRequest request)
     {
-        return new UserEmployment(
+        return new Employment
+        {
+            Company = request.Company,
+            Salary = request.Salary,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
+        };
+    }
+ 
+    public static UserEmploymentResponse ToUserEmploymentResponse(this Employment employment)
+    {
+        return new UserEmploymentResponse(
+            employment.Id,
             employment.Company,
             employment.Salary,
+            employment.MonthsOfExperience,
             employment.StartDate,
             employment.EndDate
         );
