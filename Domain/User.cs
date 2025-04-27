@@ -9,6 +9,8 @@ public class User
 
     public int Id { get; set; }
 
+    public int? AddressId { get; set; }
+
     public required string FirstName { get; set; }
 
     public required string LastName { get; set; }

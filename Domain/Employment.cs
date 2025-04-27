@@ -6,9 +6,15 @@ public class Employment
 {
     // Mandatory: Id, Company, MonthsOfExperience, Salary, StartDate
     public int Id { get; set; }
+
+    public int UserId { get; set; }
+
     public required string Company { get; set; }
+
     public required decimal Salary { get; set; }
+
     public DateTime StartDate { get; set; }
+    
     public DateTime? EndDate { get; set; }
 
     public int MonthsOfExperience
