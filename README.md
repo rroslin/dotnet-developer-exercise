@@ -3,17 +3,17 @@
 ## Overview
 This project is a .NET API developed to demonstrate proficiency in building scalable and maintainable RESTful services using ASP.NET Core. 
 
-## Requirements
+## Initial Requirements
 Develop a simple REST API, meant to allow creation/update and reading of users.
 
 We expect one API with three routes:
-- **GET** to retrieve a user by ID.
+- **GET** `api/users/{userId}`: to retrieve a user by ID. 
 
-- **POST** to create a user:
+- **POST** `api/users` to create a user:
     - Ensure the email is unique across the entire DbContext.
     - For employments, `EndDate` should be greater than `StartDate`.
 
-- **PUT** to update a user, their address, and employment (considered an asset):
+- **PUT** `api/users/{userId}` to update a user, their address, and employment (considered an asset):
     - Ensure the email is unique across the entire DbContext.
     - For employments, `EndDate` should be greater than `StartDate`.
 
@@ -54,7 +54,9 @@ public class User
 ```
 
 ## Refinement
-This are points that I would have raised to be redefined or clarified:
+This are points that I would have raised to be redefined or clarified.
+
+Class Definition:
 
 - `MonthsOfExperience` should not be assigned or modifiable in `Employment`. This can cause issues where `MonthsOfExperience` does not match `StartDate` and `EndDate`. This issue can be avoided by deriving `MonthsOfExperience` from `StartDate` and `EndDate`.
 
@@ -67,6 +69,36 @@ This are points that I would have raised to be redefined or clarified:
 - Email formatting should be validated to prevent bad data from being entered.
 
 - Mandatory fields should not be nullable unless there is a specific use case for nullability. This should be clarified during the requirements phase.
+
+API Endpoints:
+
+- Basing from the requirements `Employment` is being shoe-horned to managed inside the POST and PUT endpoint of the `User`. This is just bad coupling that will bite us in the foot later. A good solution would be to create nested enpoints for `Employment`, that way we can decouple and still maintain cohesion.
+
+- If the requirement really necessitates that employment data should be included when fetching user. We can create `User` details endpoint as a compromise. This way we can have all the details need in one call.
+
+- If the requirement really necessitates that employment data should be managed(added/deleted) under PUT endpoint. I will point that out that their are risks involved when implementing it this way:
+    - It breaks clear separation of concern.
+    - This will be hard to maintain, because `Employment` and `User` are tightly coupled, god forbid the requirements suddenly change. Decoupling this would be a nightmare. 
+    - Poses risks in client-side, because it might be misinterpreted that deleting and creating employment in the same request. This make it hard to track `Employment` changes and can cause issues persisting it.
+
+## Finalized Requirements
+
+- **GET** `api/users/{userId}`: to retrieve a user by ID.
+
+- **GET** `api/user/{userId}/details`: to retrieve a user by ID with employment details. 
+
+- **POST** `api/users`: to create a new user
+    - Ensure the email is unique across the entire DbContext.
+
+- **PUT** `api/users/{userId}`: to update an existing user, and their address.
+    - Ensure the email is unique across the entire DbContext.
+
+- **POST** `api/user/{userId}/employments`: to create new user employment.
+    - `EndDate` should be greater than `StartDate`.
+
+- **DELETE** `api/user/{userId}/employments`: to delete an existing user employment
+
+See Implementation for updated class definitions.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
