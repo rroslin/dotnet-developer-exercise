@@ -15,7 +15,7 @@ public class UpdateUserRequestValidatorTests
     public void UpdateUserRequestValidator_Validate_NotAllowEmptyFirstName()
     {
         // Arrange
-        var request = new UpdateUserRequest(1, string.Empty, "LastName", "Email", null);
+        var request = new UpdateUserRequest(string.Empty, "LastName", "Email", null);
 
         // Act
         var result = _validator.Validate(request);
@@ -30,7 +30,7 @@ public class UpdateUserRequestValidatorTests
     public void UpdateUserRequestValidator_Validate_NotAllowEmptyLastName()
     {
         // Arrange
-        var request = new UpdateUserRequest(1, "FirstName", string.Empty, "Email", null);
+        var request = new UpdateUserRequest("FirstName", string.Empty, "Email", null);
 
         // Act
         var result = _validator.Validate(request);
@@ -45,7 +45,7 @@ public class UpdateUserRequestValidatorTests
     public void UpdateUserRequestValidator_Validate_NotAllowInvalidEmail()
     {
         // Arrange
-        var request = new UpdateUserRequest(1, "FirstName", "LastName", "InvalidEmail", null);
+        var request = new UpdateUserRequest("FirstName", "LastName", "InvalidEmail", null);
 
         // Act
         var result = _validator.Validate(request);
@@ -60,7 +60,7 @@ public class UpdateUserRequestValidatorTests
     public void UpdateUserRequestValidator_Validate_AllowValidEmail()
     {
         // Arrange
-        var request = new UpdateUserRequest(1, "FirstName", "LastName", "first.last@example.com", null);
+        var request = new UpdateUserRequest("FirstName", "LastName", "first.last@example.com", null);
 
         // Act
         var result = _validator.Validate(request);
