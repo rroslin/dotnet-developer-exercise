@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options => {
     
     options.UseSqlite(connectionString.Replace("{path}", AppContext.BaseDirectory));
 });
+
+builder.Services.AddTransient<IUserDbService, UserDbService>();
 
 var app = builder.Build();
 
