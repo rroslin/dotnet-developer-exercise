@@ -1,7 +1,10 @@
-# Dotnet API Project
+# Dotnet Developer Exercise
 
 ## Overview
-This project is a .NET API developed to demonstrate proficiency in building scalable and maintainable RESTful services using ASP.NET Core. 
+This project is a .NET API developed to demonstrate proficiency building and refining requirements, as well as implementing a RESTful API with a focus on best practices.
+
+## Local Requirements
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ## Initial Requirements
 Develop a simple REST API, meant to allow creation/update and reading of users.
@@ -72,34 +75,32 @@ Class Definition:
 
 API Endpoints:
 
-- Basing from the requirements `Employment` is being shoe-horned to managed inside the POST and PUT endpoint of the `User`. This is just bad coupling that will bite us in the foot later. A good solution would be to create nested enpoints for `Employment`, that way we can decouple and still maintain cohesion.
+Based on the requirements, Employment is tightly coupled with the PUT endpoint of the User, which introduces unnecessary complexity and violates the principle of separation of concerns. Managing employment data (e.g., adding or deleting records) within the PUT endpoint creates several risks. It complicates maintenance, as decoupling Employment and User later would be a complex and error-prone process if requirements change.
 
-- If the requirement really necessitates that employment data should be included when fetching user. We can create `User` details endpoint as a compromise. This way we can have all the details need in one call.
-
-- If the requirement necessitates that employment data must be managed (added/deleted) under the `PUT` endpoint, it introduces several risks:
-    - It violates the principle of separation of concerns, as employment management is tightly coupled with user updates.
-    - It becomes difficult to maintain, as `Employment` and `User` are tightly coupled, god forbid the requirements suddenly change. Decoupling them later would be a complex and error-prone process.
-    - It poses risks on the client side, as it may lead to misinterpretation of operations (e.g., deleting and creating employment records in the same request). This makes it challenging to track changes to `Employment` and can cause issues with data persistence.
+Additionally, it poses risks on the client side, such as misinterpreting operations (e.g., deleting and creating employment records in the same request), making it challenging to track changes to Employment and potentially causing issues with data persistence. A better solution would be to create dedicated nested endpoints for Employment, allowing for decoupling while maintaining cohesion.
 
 ## Finalized Requirements
 
 Given all parties approve of the refinement. This is how I would redefine the requirements.
 
-- **GET** `api/users/{userId}`: to retrieve a user by ID.
-
-- **GET** `api/user/{userId}/details`: to retrieve a user by ID with employment details. 
+- **GET** `api/users/{userId}`: to retrieve a user by ID. Also returns the employment collection.
+    - Response should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
+    - If `EndDate` is null, should display accurate `MonthsOfExperience` based from `StartDate` and current date.
 
 - **POST** `api/users`: to create a new user
     - Ensure the email is unique across the entire DbContext.
     - Ensure the email is a valid format.
-
-- **PUT** `api/users/{userId}`: to update an existing user, and their address.
+    - Ensure Employment `EndDate` should be greater than `StartDate`.
+    - Response should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
+    - If `EndDate` is null, should display accurate `MonthsOfExperience` based from `StartDate` and current date.
+    
+- **PUT** `api/users/{userId}`: to update an existing user, and their address. (Does not include employments)
     - Ensure the email is unique across the entire DbContext.
     - Ensure the email is a valid format.
 
 - **POST** `api/user/{userId}/employments`: to create new user employment.
-    - `EndDate` should be greater than `StartDate`.
-    - Should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
+    - Ensure `EndDate` should be greater than `StartDate`.
+    - Response should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
     - If `EndDate` is null, should display accurate `MonthsOfExperience` based from `StartDate` and current date.
 
 - **DELETE** `api/user/{userId}/employments`: to delete an existing user employment
