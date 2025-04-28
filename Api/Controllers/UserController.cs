@@ -1,28 +1,26 @@
-using System;
 using Application;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence.Contexts;
+using Persistence.Services;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UserController(AppDbContext dbContext) : ControllerBase
+public class UserController(IUserDbService userDbService) : ControllerBase
 {
-    AppDbContext _dbContext = dbContext;
+    IUserDbService _userDbService = userDbService;
 
     [HttpGet("{id}")]
-    public ActionResult<GetUserResponse> GetUser(int id)
+    public async Task<ActionResult<GetUserResponse>> GetUser(int id)
     {
-        var user = _dbContext.Users.Find(id);
+        var user = await _userDbService.GetUserByIdAsync(id);
         if (user == null) return NotFound();
 
         return Ok(user.ToGetUserByIdResponse());
     }
 
     [HttpPost]
-    public ActionResult<CreateUserResponse> CreateUser(CreateUserRequest request)
+    public async Task<ActionResult<CreateUserResponse>> CreateUser(CreateUserRequest request)
     {
         var validator = new CreateUserRequestValidator();
         var validationResult = validator.Validate(request);
@@ -33,21 +31,23 @@ public class UserController(AppDbContext dbContext) : ControllerBase
 
         var user = request.ToUser();
 
-        if (_dbContext.Users.Any(u => u.Email == user.Email))
+        try
         {
-            return Conflict(new { Message = "User with this email already exists." });
+            await _userDbService.VerifyUserEmailAsync(user.Email);
+            await _userDbService.CreateUserAsync(user);
         }
-
-        _dbContext.Users.Add(user);
-        _dbContext.SaveChanges();
-
+        catch (Exception ex)
+        {
+            return Conflict(new { ex.Message });  
+        }
+        
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToCreateUserResponse());
     }
 
     [HttpPut("{id}")]
-    public ActionResult<UpdateUserResponse> UpdateUser(int id, UpdateUserRequest request)
+    public async Task<ActionResult<UpdateUserResponse>> UpdateUser(int id, UpdateUserRequest request)
     {
-        var user = _dbContext.Users.Find(id);
+        var user = await _userDbService.GetUserByIdAsync(id);
         if (user == null) return NotFound();
 
         var validator = new UpdateUserRequestValidator();
@@ -57,24 +57,25 @@ public class UserController(AppDbContext dbContext) : ControllerBase
             return BadRequest(validationResult.Errors);
         }
 
-        if (_dbContext.Users.Any(u => u.Email == request.Email && u.Id != id))
+        try
         {
-            return Conflict(new { Message = "User with this email already exists." });
+            await _userDbService.VerifyUserEmailAsync(request.Email);
+            user.UpdateUser(request);
+            await _userDbService.UpdateUserAsync(user);
+        }
+        catch (Exception ex)
+        {
+            return Conflict(new { ex.Message });  
         }
 
-        user.UpdateUser(request);
-        _dbContext.SaveChanges();
-    
+
         return Ok(user.ToUpdateUserResponse());
     }
 
     [HttpPost("{userId}/employments")]
-    public ActionResult<CreateUserEmploymentResponse> CreateUserEmployment(int userId, CreateUserEmploymentRequest request)
+    public async Task<ActionResult<CreateUserEmploymentResponse>> CreateUserEmployment(int userId, CreateUserEmploymentRequest request)
     {
-        var user = _dbContext.Users
-            .Include(u => u.Employments)
-            .FirstOrDefault(u => u.Id == userId);
-
+        var user = await _userDbService.GetUserByIdAsync(userId);
         if (user == null) return NotFound();
 
         var validator = new CreateUserEmploymentRequestValidator();
@@ -86,28 +87,23 @@ public class UserController(AppDbContext dbContext) : ControllerBase
 
         var employment = request.ToEmployment();
         user.AddEmployment(employment);
-        _dbContext.SaveChanges();
+        await _userDbService.UpdateUserAsync(user);
 
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, employment.ToCreateUserEmploymentResponse());
     }
 
     [HttpDelete("{userId}/employments/{id}")]
-    public ActionResult DeleteUserEmployment(int userId, int id)
+    public async Task<ActionResult> DeleteUserEmployment(int userId, int id)
     {
-        var user = _dbContext.Users
-            .Include(u => u.Employments)
-            .FirstOrDefault(u => u.Id == userId);
-
+        var user = await _userDbService.GetUserByIdAsync(userId);
         if (user == null) return NotFound();
 
         var employment = user.Employments.FirstOrDefault(e => e.Id == id);
         if (employment == null) return NotFound();
 
         user.RemoveEmployment(employment);
-        _dbContext.SaveChanges();
+        await _userDbService.UpdateUserAsync(user);
 
         return NoContent();
     }
-    
-
 }
