@@ -5,11 +5,7 @@ public class User
     // Mandatory: Id, FirstName, LastName, Email
     // Unique: Email
 
-    private readonly HashSet<Employment> _employment = [];
-
     public int Id { get; set; }
-
-    public int? AddressId { get; set; }
 
     public required string FirstName { get; set; }
 
@@ -19,19 +15,19 @@ public class User
 
     public Address? Address { get; set; }
 
-    public IReadOnlyCollection<Employment> Employments => _employment.ToList().AsReadOnly();
+    public HashSet<Employment> Employments = [];
     
     public void AddEmployment(Employment employment)
     {
         ArgumentNullException.ThrowIfNull(employment);
 
-        _employment.Add(employment);
+        Employments.Add(employment);
     }
 
     public void RemoveEmployment(Employment employment)
     {
         ArgumentNullException.ThrowIfNull(employment);
 
-        _employment.Remove(employment);
+        Employments.Remove(employment);
     }
 }
