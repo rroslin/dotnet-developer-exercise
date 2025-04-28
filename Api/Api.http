@@ -4,3 +4,74 @@
 GET {{Api_HostAddress}}/health
 Accept: text/plain
 
+### Redoc
+GET {{Api_HostAddress}}/api-docs/index.html
+Accept: text/html
+
+### OpenAPI
+GET {{Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+### GetUser
+GET {{Api_HostAddress}}/api/users/3
+
+### CreateUser
+POST {{Api_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+    "firstName": "Generic",
+    "lastName": "User",
+    "email": "generic.user2@example.com",
+    "address": {  
+    "street": "130 Main St",
+    "city": "New York",
+    "postCode": "string"
+    },
+    "employments": [
+        {
+            "company": "Generic Tech",
+            "position": "Generic Engineer",
+            "salary": 6000.00,
+            "startDate": "2023-10-01T00:00:00Z",
+            "endDate": "2024-10-01T00:00:00Z"
+        },
+        {
+            "company": "Generic Tech",
+            "position": "Generic Engineer II",
+            "salary": 7533.33,
+            "startDate": "2024-10-01T00:00:00Z",
+            "endDate": null
+        }
+    ]
+}
+
+### UpdateUser
+PUT {{Api_HostAddress}}/api/users/2
+Content-Type: application/json
+
+{
+    "firstName": "Raymark",
+    "lastName": "Roslin",
+    "email": "raymark.roslin@gmail.com",
+    "address": {  
+    "street": "130 Main St",
+    "city": "New York",
+    "postCode": "10002"
+    }
+}
+
+### CreateUserEmployment
+POST {{Api_HostAddress}}/api/users/3/employments
+Content-Type: application/json
+
+{
+    "company": "Generic Tech",
+    "position": "Generic Engineer",
+    "salary": 6000.00,
+    "startDate": "2023-10-01T00:00:00Z",
+    "endDate": "2022-10-01T00:00:00Z"
+}
+
+### DeleteUserEmployment
+DELETE {{Api_HostAddress}}/api/users/3/employments/4
