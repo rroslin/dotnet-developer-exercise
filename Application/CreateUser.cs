@@ -54,7 +54,8 @@ public static class CreateUserMappingExtensions
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            Address = request.Address?.ToAddress()
+            Address = request.Address?.ToAddress(),
+            Employments = request.Employments.Select(e => e.ToEmployment()).ToHashSet()
         };
     }
     public static CreateUserResponse ToCreateUserResponse(this User user)
