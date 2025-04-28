@@ -107,5 +107,13 @@ Given all parties approve of the refinement. This is how I would redefine the re
 
 See Implementation for updated class definitions.
 
+## Things to Improve
+Things I would have improved if I had more time:
+
+- Add Integration Tests
+- Better organization of the project structure
+- Using actual DB for testing
+- Use better abstraction to reduce code duplication
+
 ## License
 This project is licensed under the [MIT License](LICENSE).
