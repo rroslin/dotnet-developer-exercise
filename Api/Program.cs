@@ -31,4 +31,12 @@ app.UseHttpsRedirection();
 
 app.MapHealthChecks("/health");
 
+app.UseHsts();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.MapControllers();
+
 app.Run();
