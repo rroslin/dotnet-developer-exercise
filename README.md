@@ -103,7 +103,7 @@ Given all parties approve of the refinement. This is how I would redefine the re
     - Response should display accurate `MonthsOfExperience` based from `StartDate` and `EndDate`.
     - If `EndDate` is null, should display accurate `MonthsOfExperience` based from `StartDate` and current date.
 
-- **DELETE** `api/user/{userId}/employments`: to delete an existing user employment
+- **DELETE** `api/user/{userId}/employments/{employmentId}`: to delete an existing user employment
 
 See Implementation for updated class definitions.
 
