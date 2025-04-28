@@ -86,7 +86,7 @@ public class UserController(IUserDbService userDbService) : ControllerBase
         }
 
         var employment = request.ToEmployment();
-        user.AddEmployment(employment);
+        user.Employments.Add(employment);
         await _userDbService.UpdateUserAsync(user);
 
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, employment.ToCreateUserEmploymentResponse());
@@ -101,7 +101,7 @@ public class UserController(IUserDbService userDbService) : ControllerBase
         var employment = user.Employments.FirstOrDefault(e => e.Id == id);
         if (employment == null) return NotFound();
 
-        user.RemoveEmployment(employment);
+        user.Employments.Remove(employment);
         await _userDbService.UpdateUserAsync(user);
 
         return NoContent();
