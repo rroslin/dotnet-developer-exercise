@@ -59,7 +59,11 @@ public class UserController(IUserDbService userDbService) : ControllerBase
 
         try
         {
-            await _userDbService.VerifyUserEmailAsync(request.Email);
+            if(user.Email != request.Email)
+            {
+                await _userDbService.VerifyUserEmailAsync(request.Email);
+            }
+            
             user.UpdateUser(request);
             await _userDbService.UpdateUserAsync(user);
         }
