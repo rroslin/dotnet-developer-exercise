@@ -9,8 +9,7 @@ public record UpdateUserResponse(
     string FirstName, 
     string LastName, 
     string Email, 
-    UserAddress? Address, 
-    IReadOnlyCollection<UserEmploymentResponse> Employments
+    UserAddress? Address
 );
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
@@ -40,8 +39,7 @@ public static class UpdateUserMappingExtensions
             user.FirstName,
             user.LastName,
             user.Email,
-            user.Address?.ToUserAddress(),
-            user.Employments.Select(e => e.ToUserEmploymentResponse()).ToList().AsReadOnly()
+            user.Address?.ToUserAddress()
         );
     }
 }
