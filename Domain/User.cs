@@ -16,18 +16,4 @@ public class User
     public Address? Address { get; set; }
 
     public HashSet<Employment> Employments = [];
-    
-    public void AddEmployment(Employment employment)
-    {
-        ArgumentNullException.ThrowIfNull(employment);
-
-        Employments.Add(employment);
-    }
-
-    public void RemoveEmployment(Employment employment)
-    {
-        ArgumentNullException.ThrowIfNull(employment);
-
-        Employments.Remove(employment);
-    }
 }
